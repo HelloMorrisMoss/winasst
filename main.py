@@ -1,0 +1,130 @@
+import os
+import win32com
+import subprocess
+import time
+from datetime import datetime
+import win10toast as ts  # this has had it's __init__.py file replaced with the one from
+# https://github.com/Charnelx/Windows-10-Toast-Notifications to enable clickable toasts
+from typing import Callable
+from check_calendar import check_appts_soon
+from qlog import qlog
+
+
+def get_toasty(title: str, message: str, action: Callable = None):
+    toaster = ts.ToastNotifier()
+    clicked = toaster.show_toast(title,
+                                 message,
+                                 callback_on_click=action)
+
+
+def test():
+    print('clicked')
+
+
+# get_toasty('Missing Programs', 'Test', test)
+
+# def qlog(msg):
+#     log_here = r"C:\my documents\assistant_log.txt"
+#     # print(datetime.now())
+#     with open(log_here, 'a') as lf:
+#         lf.writelines('{tm} {msg}.\n'.format(tm=datetime.now(), msg=msg))
+
+if True: #__name__ == 'main':
+    qlog('Program started.')
+
+    # dictionary of processes to watch
+    # if the top level key isn't found in tasklist output then the sub-dictionary is used to try to start the program
+
+    # # for testing, a shorter dict
+    # procs_2_watch = {
+    #     'lync.exe': {
+    #         'name': 'Skype',
+    #         'startin': r'"C:\Program Files\Microsoft Office\root\Office16"',
+    #         'cmd': r'"C:\Program Files\Microsoft Office\root\Office16\lync.exe"',
+    #         'running': False
+    #     }
+    # }
+
+    procs_2_watch = {
+        'Teams.exe': {
+            'name': 'Teams',
+            'startin': r'"C:\Users\lmcglaughlin\AppData\Local\Microsoft\Teams"',
+            'cmd': r'C:\Users\lmcglaughlin\AppData\Local\Microsoft\Teams\Update.exe --processStart "Teams.exe"',
+            'running': False
+        },
+        'OUTLOOK.EXE': {
+            'name': 'Outlook',
+            'startin': r'"C:\Program Files\Microsoft Office\root\Office16"',
+            'cmd': r'"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"',
+            'running': False
+        },
+        'lync.exe': {
+            'name': 'Skype',
+            'startin': r'"C:\Program Files\Microsoft Office\root\Office16"',
+            'cmd': r'"C:\Program Files\Microsoft Office\root\Office16\lync.exe"',
+            'running': False
+        },
+        'googledrivesync.exe': {
+            'name': 'gdrive',
+            'startin': r'"C:\Program Files\Google\Drive"',
+            'cmd': r'"C:\Program Files\Google\Drive\googledrivesync.exe"',
+            'running': False
+        }
+    }
+
+    # process names to look for in tasklist output
+    proc_nms = procs_2_watch.keys()
+
+    # remind to stretch
+    stretch_time = datetime.now()
+
+    # loop through processes every once in a while to check for programs which frequently give trouble about being open
+    try:
+        while True:
+            print('{tm} Checking programs.'.format(tm=datetime.now()))
+
+            # what processes are open?
+            # universal_newlines=True was NEEDED; caused out of index error on the list after .split() the rows
+            output = subprocess.check_output("tasklist.exe", shell=True, universal_newlines=True)
+            # print(output)
+
+            # reset processes found
+            for key, val in procs_2_watch.items():
+                val['running'] = False
+
+            # check the output for the processes
+            for rw in output.splitlines():
+                rwsplt = rw.split()
+                if len(rwsplt) > 0:
+                    if rwsplt[0] in proc_nms:
+                        procs_2_watch[rwsplt[0]]['running'] = True
+                        # print(rwsplt)
+            for key, val in procs_2_watch.items():
+                # print(key, val)
+                if not val['running']:
+                    print('Trying to open: {}'.format(val['name']))
+                    # os.popen(['c:\windows\system32\cmd.exe {app}'.format(app=val['cmd']))
+                    get_toasty('Missing Programs', 'Trying to open: {}'.format(val['name']))
+
+                    # change to the startin directory then run the command
+                    command_to_send = 'cd ' + val['startin'] + ' && ' + val['cmd']
+                    os.popen(command_to_send)
+                    # print(rwsplt)
+
+                    qlog('Tried to open {key}'.format(key=key))
+            print('Check complete')
+
+            # every once in a while remind to stretch
+            since_stretch = datetime.now() - stretch_time
+            if since_stretch.seconds > 900:
+                get_toasty("Get stretchin'!", 'Stretch and look outside, maybe walk a bit.')
+                qlog('Stretch reminder popup.')
+
+            # check if appts are coming up soon
+            check_appts_soon()
+
+            # wait a while before checking again
+            time.sleep(360)
+    except (KeyboardInterrupt, SystemExit):
+        qlog('Assistant program ended by user.')
+

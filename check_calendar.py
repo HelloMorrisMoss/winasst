@@ -24,6 +24,8 @@ def get_toasty(title: str, message: str, action: Callable = None):
     clicked = toaster.show_toast(title,
                                  message,
                                  callback_on_click=action)
+
+
 def get_appts():
     """Get appointments from outlook calendar."""
     # https://stackoverflow.com/questions/21477599/read-outlook-events-via-python
@@ -31,17 +33,36 @@ def get_appts():
     ns = Outlook.GetNamespace("MAPI")
 
     appointments = ns.GetDefaultFolder(9).Items
-    # Restrict to items in the next 30 days (using Python 3.3 - might be slightly different for 2.7)
-    begin = datetime.today() - timedelta(days=1)
-    end = datetime.today() + timedelta(days=1) #begin + datetime.timedelta(days = 30);
-    # begin = datetime(year=nowa().year, month=nowa().month, day=1)
-    # next_month = begin + timedelta(days=35)
-    # end = datetime(next_month.year, next_month.month, 1)
-    print('begin {} end {}'.format(begin, end))
-    restriction = "[Start] >= '" + begin.strftime("%m/%d/%Y") + "' AND [End] <= '" +end.strftime("%m/%d/%Y") + "'"
-    print('restriction', restriction)
-    restricted_items = appointments.Restrict(restriction)
-    return restricted_items
+
+    # filtering using Restrict doesn't seem to work properly, it'd probably be faster, but just going to return all of
+    # them and filter them after the fact
+
+    # # Restrict to items in the next 30 days (using Python 3.3 - might be slightly different for 2.7)
+    # begin = datetime.today() - timedelta(days=1)
+    # end = datetime.today() + timedelta(days=1)  # begin + datetime.timedelta(days = 30);
+    # # begin = datetime(year=nowa().year, month=nowa().month, day=1)
+    # # next_month = begin + timedelta(days=35)
+    # # end = datetime(next_month.year, next_month.month, 1)
+    #
+    # # [Start] >= '07/22/2020 12:00 AM' AND [End] <= '08/21/2020 12:00 AM'
+    # # [Start] >= '07/22/2020 12:00 AM'
+    #
+    # print('begin {} end {}'.format(begin, end))
+    # # restriction = "[Start] >= '" + begin.strftime("%m/%d/%Y") + "' AND [End] <= '" + end.strftime("%m/%d/%Y") + "'"
+    # # restriction1 = "[Start] >= '" + begin.strftime("%m/%d/%Y 12:00 AM") + "'"
+    # # restriction2 = "'[Start] <= '" + end.strftime("%m/%d/%Y 00:00 AM") + "'"
+    # # print('restriction1', restriction1)
+    # # print('restriction2', restriction2)
+    #
+    # # str_restriction = "[Start] >= '" + Outlook.Format(begin, "mm/dd/yyyy hh:mm AMPM") + "' AND [End] <= '" & + Outlook.Format(end, "mm/dd/yyyy hh:mm AMPM") & "'"
+    # # str_restriction = "[Start] >= '07/22/2020 12:00 AM' AND [End] <= '08/21/2020 12:00 AM'"
+    # str_restriction = "[Start]>='07-22-2020 12:00 AM'"
+    # restricted_items = appointments.Restrict(str_restriction)
+    #
+    # # restricted_items = appointments.Restrict(restriction1)
+    # # restricted_items = restricted_items.Restrict(restriction2)
+    # return restricted_items
+    return appointments
 
 # # nevermind, wasn't paying attention, it has .subject, .start etc
 # def split_appts(appts):
@@ -68,19 +89,27 @@ def check_appts_soon():
     # print('now', now)
     for appt in appts:
         # print(repr(appt))
-        start_time = appt.Start.astimezone() + timedelta(hours=4)
-        start_time = start_time.replace(year=2020)
-        # print(appt.Subject, 'subbed start time', start_time, 'now', now)
-        how_soon = start_time - now
-        # print(how_soon)
-        if how_soon.seconds < 1200:
-            subj = str(appt.Subject)
-            # print(subj, type(subj))
-            msg = subj + ' In {} minutes'.format(round(how_soon.seconds/60, 1))
+        # print(appt.Start.date(), datetime.today().date())
+        # break
+        if appt.Start.date() == datetime.today().date() and appt.Start.time() > now.time():
+            print('today', appt.Start, appt.Subject)
+            start_time = appt.Start.astimezone() + timedelta(hours=4)
+            # start_time = start_time.replace(year=2020)
+            # print(appt.Subject, 'subbed start time', start_time, 'now', now)
+            how_soon = start_time - now
+            # print(how_soon)
 
-            get_toasty(title=subj, message=msg)
-            # print(msg)
-            qlog(msg)
+            if how_soon.total_seconds() < 1200:
+                subj = str(appt.Subject)
+                # print(subj, type(subj))
+                msg = subj + ' In {} minutes'.format(round(how_soon.seconds/60, 1))
+
+                get_toasty(title=subj, message=msg)
+                print(msg)
+                # qlog(msg)
+                print("{0} Start: {1}, End: {2}, Organizer: {3}".format(
+                      appt.Subject, appt.Start,
+                      appt.End, appt.Organizer))
 
 
-# check_appts_soon()
+check_appts_soon()

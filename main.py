@@ -11,6 +11,16 @@ from qlog import qlog
 
 
 def get_toasty(title: str, message: str, action: Callable = None):
+    """Create a windows 10 toast notification.
+
+    :param title: str
+        toast popup title
+    :param message: str
+        toast popup body text
+    :param action:
+        optional Callable, such as a function, when the toast is clicked
+    :rtype: None
+    """
     toaster = ts.ToastNotifier()
     clicked = toaster.show_toast(title,
                                  message,

@@ -8,23 +8,24 @@ import win10toast as ts  # this has had it's __init__.py file replaced with the 
 from typing import Callable
 from check_calendar import check_appts_soon
 from qlog import qlog
+from toaster import get_toasty
 
 
-def get_toasty(title: str, message: str, action: Callable = None):
-    """Create a windows 10 toast notification.
-
-    :param title: str
-        toast popup title
-    :param message: str
-        toast popup body text
-    :param action:
-        optional Callable, such as a function, when the toast is clicked
-    :rtype: None
-    """
-    toaster = ts.ToastNotifier()
-    clicked = toaster.show_toast(title,
-                                 message,
-                                 callback_on_click=action)
+# def get_toasty(title: str, message: str, action: Callable = None):
+#     """Create a windows 10 toast notification.
+#
+#     :param title: str
+#         toast popup title
+#     :param message: str
+#         toast popup body text
+#     :param action:
+#         optional Callable, such as a function, when the toast is clicked
+#     :rtype: None
+#     """
+#     toaster = ts.ToastNotifier()
+#     clicked = toaster.show_toast(title,
+#                                  message,
+#                                  callback_on_click=action)
 
 
 def check_progs():
@@ -62,10 +63,6 @@ def check_progs():
     print('Check complete')
 
 
-def test():
-    print('clicked')
-
-
 # get_toasty('Missing Programs', 'Test', test)
 
 # def qlog(msg):
@@ -80,15 +77,6 @@ if True: #__name__ == 'main':
     # dictionary of processes to watch
     # if the top level key isn't found in tasklist output then the sub-dictionary is used to try to start the program
 
-    # # for testing, a shorter dict
-    # procs_2_watch = {
-    #     'lync.exe': {
-    #         'name': 'Skype',
-    #         'startin': r'"C:\Program Files\Microsoft Office\root\Office16"',
-    #         'cmd': r'"C:\Program Files\Microsoft Office\root\Office16\lync.exe"',
-    #         'running': False
-    #     }
-    # }
 
     procs_2_watch = {
         'Teams.exe': {

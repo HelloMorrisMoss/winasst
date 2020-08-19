@@ -54,6 +54,7 @@ def check_progs():
             # os.popen(['c:\windows\system32\cmd.exe {app}'.format(app=val['cmd']))
             get_toasty('Missing Programs', 'Trying to open: {}'.format(val['name']))
 
+            # TODO: change the below to a function to pass to the get toasty call
             # change to the startin directory then run the command
             command_to_send = 'cd ' + val['startin'] + ' && ' + val['cmd']
             os.popen(command_to_send)
@@ -63,15 +64,7 @@ def check_progs():
     print('Check complete')
 
 
-# get_toasty('Missing Programs', 'Test', test)
-
-# def qlog(msg):
-#     log_here = r"C:\my documents\assistant_log.txt"
-#     # print(datetime.now())
-#     with open(log_here, 'a') as lf:
-#         lf.writelines('{tm} {msg}.\n'.format(tm=datetime.now(), msg=msg))
-
-if True: #__name__ == 'main':
+if __name__ == '__main__':
     qlog('Program started.')
 
     # dictionary of processes to watch

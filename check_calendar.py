@@ -30,9 +30,12 @@ def get_appts():
     """Get appointments from outlook calendar."""
     # https://stackoverflow.com/questions/21477599/read-outlook-events-via-python
     Outlook = win32com.client.Dispatch("Outlook.Application")
-    ns = Outlook.GetNamespace("MAPI")
+    try:
+        ns = Outlook.GetNamespace("MAPI")
 
-    appointments = ns.GetDefaultFolder(9).Items
+        appointments = ns.GetDefaultFolder(9).Items
+    except AttributeError:
+        appointments = []
 
     # filtering using Restrict doesn't seem to work properly, it'd probably be faster, but just going to return all of
     # them and filter them after the fact

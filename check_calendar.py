@@ -1,5 +1,7 @@
+from inspect import currentframe, getframeinfo
 import win32com.client
 from datetime import datetime, timezone, timedelta
+from traceback import format_exc as exc
 
 # from main import get_toasty
 import re
@@ -29,13 +31,20 @@ def get_toasty(title: str, message: str, action: Callable = None):
 def get_appts():
     """Get appointments from outlook calendar."""
     # https://stackoverflow.com/questions/21477599/read-outlook-events-via-python
+    print(getframeinfo(currentframe()).lineno)
     Outlook = win32com.client.Dispatch("Outlook.Application")
+
     try:
+        print(getframeinfo(currentframe()).lineno)
         ns = Outlook.GetNamespace("MAPI")
 
         appointments = ns.GetDefaultFolder(9).Items
     except AttributeError:
+        print(exc())
         appointments = []
+
+    # finally:
+    #     Outlook.Quit() # this seems to be closing the existing outlook
 
     # filtering using Restrict doesn't seem to work properly, it'd probably be faster, but just going to return all of
     # them and filter them after the fact
@@ -85,34 +94,40 @@ def get_appts():
 
 def check_appts_soon():
     # tz = timezone.tz
-    timezone
+    print(getframeinfo(currentframe()).lineno)
+
+    # timezone
     appts = get_appts()
     # now = datetime.now().astimezone(timezone.utcoffset(-5))
     now = nowa()
     # print('now', now)
-    for appt in appts:
-        # print(repr(appt))
-        # print(appt.Start.date(), datetime.today().date())
-        # break
-        if appt.Start.date() == datetime.today().date() and appt.Start.time() > now.time():
-            print('today', appt.Start, appt.Subject)
-            start_time = appt.Start.astimezone() + timedelta(hours=4)
-            # start_time = start_time.replace(year=2020)
-            # print(appt.Subject, 'subbed start time', start_time, 'now', now)
-            how_soon = start_time - now
-            # print(how_soon)
+    print(len(appts), appts)
+    if len(appts) != 0:
+        print(getframeinfo(currentframe()).lineno)
+        for appt in appts:
+            # print(repr(appt))
+            # print(appt.Start.date(), datetime.today().date())
+            # break
+            if appt.Start.date() == datetime.today().date() and appt.Start.time() > now.time():
+                print('today', appt.Start, appt.Subject)
+                start_time = appt.Start.astimezone() + timedelta(hours=4)
+                # start_time = start_time.replace(year=2020)
+                # print(appt.Subject, 'subbed start time', start_time, 'now', now)
+                how_soon = start_time - now
+                # print(how_soon)
 
-            if how_soon.total_seconds() < 1200:
-                subj = str(appt.Subject)
-                # print(subj, type(subj))
-                msg = subj + ' In {} minutes'.format(round(how_soon.seconds/60, 1))
+                if how_soon.total_seconds() < 1200:
+                    subj = str(appt.Subject)
+                    # print(subj, type(subj))
+                    msg = subj + ' In {} minutes'.format(round(how_soon.seconds/60, 1))
 
-                get_toasty(title=subj, message=msg)
-                print(msg)
-                # qlog(msg)
-                print("{0} Start: {1}, End: {2}, Organizer: {3}".format(
-                      appt.Subject, appt.Start,
-                      appt.End, appt.Organizer))
+                    get_toasty(title=subj, message=msg)
+                    print(msg)
+                    # qlog(msg)
+                    print("{0} Start: {1}, End: {2}, Organizer: {3}".format(
+                          appt.Subject, appt.Start,
+                          appt.End, appt.Organizer))
 
-
-check_appts_soon()
+    else:
+        print('No appts returned.')
+# check_appts_soon()

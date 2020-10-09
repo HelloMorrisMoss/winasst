@@ -128,13 +128,14 @@ if __name__ == '__main__':
                 # qlog('Stretch reminder popup.')
                 print('Stretch reminder popup.')
                 stretch_time = now
-
+            print('between ifs')
             # check if appts are coming up soon
             since_appts = now - appt_time
             if since_appts.seconds > 300:
                 print('Checking for appts.')
                 check_appts_soon()
                 appt_time = now
+                print('Appts check complete.')
 
             # wait a while before checking again
             time.sleep(10)

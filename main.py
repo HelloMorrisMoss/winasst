@@ -11,6 +11,15 @@ from qlog import lg
 from toaster import get_toasty
 
 
+def open_that(key, val):
+    # TODO: change the below to a function to pass to the get toasty call
+    # change to the startin directory then run the command
+    command_to_send = 'cd ' + val['startin'] + ' && ' + val['cmd']
+    os.popen(command_to_send)
+    # lg.debug(rwsplt)
+    lg.debug('Tried to open {key}'.format(key=key))
+
+
 def check_progs():
     lg.debug('{tm} Checking programs.'.format(tm=datetime.now()))
 
@@ -33,17 +42,10 @@ def check_progs():
     for key, val in procs_2_watch.items():
         # lg.debug(key, val)
         if not val['running']:
-            lg.debug('Trying to open: {}'.format(val['name']))
+            lg.debug('{} is not open, prompting to open.'.format(val['name']))
             # os.popen(['c:\windows\system32\cmd.exe {app}'.format(app=val['cmd']))
-            get_toasty('Missing Programs', 'Trying to open: {}'.format(val['name']))
+            get_toasty('Missing Programs', 'Click to try to open: {}'.format(val['name']), open_that, key, val)
 
-            # TODO: change the below to a function to pass to the get toasty call
-            # change to the startin directory then run the command
-            command_to_send = 'cd ' + val['startin'] + ' && ' + val['cmd']
-            os.popen(command_to_send)
-            # lg.debug(rwsplt)
-
-            qlog('Tried to open {key}'.format(key=key))
     lg.debug('Check complete')
 
 

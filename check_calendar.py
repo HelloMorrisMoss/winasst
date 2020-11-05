@@ -22,25 +22,28 @@ def nowa():
 
 
 def get_toasty(title: str, message: str, action: Callable = None):
+    """Display a windows toaster notification, optionally with an action on click."""
     toaster = ts.ToastNotifier()
     clicked = toaster.show_toast(title,
                                  message,
                                  callback_on_click=action)
+    if clicked:
+        lg.debug('toaster notification was clicked.')
 
 
 def get_appts():
     """Get appointments from outlook calendar."""
     # https://stackoverflow.com/questions/21477599/read-outlook-events-via-python
-    print(getframeinfo(currentframe()).lineno)
+    lg.debug(getframeinfo(currentframe()).lineno)
     Outlook = win32com.client.Dispatch("Outlook.Application")
 
     try:
-        print(getframeinfo(currentframe()).lineno)
+        lg.debug(getframeinfo(currentframe()).lineno)
         ns = Outlook.GetNamespace("MAPI")
 
         appointments = ns.GetDefaultFolder(9).Items
     except AttributeError:
-        print(exc())
+        lg.debug(exc())
         appointments = []
 
     # finally:
@@ -59,12 +62,12 @@ def get_appts():
     # # [Start] >= '07/22/2020 12:00 AM' AND [End] <= '08/21/2020 12:00 AM'
     # # [Start] >= '07/22/2020 12:00 AM'
     #
-    # print('begin {} end {}'.format(begin, end))
+    # lg.debug('begin {} end {}'.format(begin, end))
     # # restriction = "[Start] >= '" + begin.strftime("%m/%d/%Y") + "' AND [End] <= '" + end.strftime("%m/%d/%Y") + "'"
     # # restriction1 = "[Start] >= '" + begin.strftime("%m/%d/%Y 12:00 AM") + "'"
     # # restriction2 = "'[Start] <= '" + end.strftime("%m/%d/%Y 00:00 AM") + "'"
-    # # print('restriction1', restriction1)
-    # # print('restriction2', restriction2)
+    # # lg.debug('restriction1', restriction1)
+    # # lg.debug('restriction2', restriction2)
     #
     # # str_restriction = "[Start] >= '" + Outlook.Format(begin, "mm/dd/yyyy hh:mm AMPM") + "' AND [End] <= '" & + Outlook.Format(end, "mm/dd/yyyy hh:mm AMPM") & "'"
     # # str_restriction = "[Start] >= '07/22/2020 12:00 AM' AND [End] <= '08/21/2020 12:00 AM'"
@@ -76,60 +79,44 @@ def get_appts():
     # return restricted_items
     return appointments
 
-# # nevermind, wasn't paying attention, it has .subject, .start etc
-# def split_appts(appts):
-#     ptrn = re.compile(r'Start:|End:|Organizer')
-#     split_appts = []
-#     for appt in appts:
-#         split_appts.append(re.split(ptrn, appt))
-#     print(split_appts)
-
-# restrictedItems = get_appts()
-# # Iterate through restricted AppointmentItems and print them
-# for appointmentItem in restrictedItems:
-#     print("{0} Start: {1}, End: {2}, Organizer: {3}".format(
-#           appointmentItem.Subject, appointmentItem.Start,
-#           appointmentItem.End, appointmentItem.Organizer))
-
 
 def check_appts_soon():
     # tz = timezone.tz
-    lg.debug(getframeinfo(currentframe()).lineno)
+    lg.debug('checking for appts soon.')
 
     # timezone
     appts = get_appts()
     # now = datetime.now().astimezone(timezone.utcoffset(-5))
     now = nowa()
-    # print('now', now)
-    print(len(appts), appts)
+    lg.debug('now ' + str(now))
     if len(appts) != 0:
-        print(getframeinfo(currentframe()).lineno)
+        lg.debug(getframeinfo(currentframe()).lineno)
         for appt in appts:
-            # print(repr(appt))
-            # print(appt.Start.date(), datetime.today().date())
+            # lg.debug(repr(appt))
+            # lg.debug(appt.Start.date(), datetime.today().date())
             # break
             if appt.Start.date() == datetime.today().date() and appt.Start.time() > now.time():
-                print('today', appt.Start, appt.Subject)
+                lg.debug('today', appt.Start, appt.Subject)
                 start_time = appt.Start.astimezone() + timedelta(hours=4)
                 # start_time = start_time.replace(year=2020)
-                # print(appt.Subject, 'subbed start time', start_time, 'now', now)
+                # lg.debug(appt.Subject, 'subbed start time', start_time, 'now', now)
                 how_soon = start_time - now
-                # print(how_soon)
+                # lg.debug(how_soon)
 
                 if how_soon.total_seconds() < 1200:
                     subj = str(appt.Subject)
-                    # print(subj, type(subj))
+                    # lg.debug(subj, type(subj))
                     msg = subj + ' In {} minutes'.format(round(how_soon.seconds/60, 1))
 
                     get_toasty(title=subj, message=msg)
-                    print(msg)
+                    lg.debug(msg)
                     # qlog(msg)
-                    print("{0} Start: {1}, End: {2}, Organizer: {3}".format(
+                    lg.debug("{0} Start: {1}, End: {2}, Organizer: {3}".format(
                           appt.Subject, appt.Start,
                           appt.End, appt.Organizer))
 
     else:
-        print('No appts returned.')
+        lg.debug('No appts returned.')
 
 # test
 if __name__ == '__main__':

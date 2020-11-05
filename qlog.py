@@ -6,17 +6,18 @@ from logging.config import dictConfig
 logging_config = dict(
     version=1,
     formatters={
-        'f': {'format':
-                  '%(asctime)s %(module)s>%(funcName)s>%(lineno)-4d %(levelname)s: %(message)s'}
-
+                'console_format': {'format':
+                                   '%(asctime)s %(module)s.%(funcName)s.%(lineno)-4d %(levelname)s: %(message)s'},
+                'log_file_format': {'format':
+                                    '"%(asctime)s","%(module)s.%(funcName)s.%(lineno)d","%(levelname)s","%(message)s"'}
     },
     handlers={
-        'h': {'class': 'logging.StreamHandler',
-              'formatter': 'f',
+        'console_log_handler': {'class': 'logging.StreamHandler',
+              'formatter': 'console_format',
               'level': logging.DEBUG},
-        'debug_rotating_file_handler': {
+        'rotating_csv_file_log_handler': {
             'level': 'DEBUG',
-            'formatter': 'f',
+            'formatter': 'log_file_format',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': 'debug.log',
             'mode': 'a',
@@ -24,7 +25,7 @@ logging_config = dict(
             'backupCount': 10}
     },
     root={
-        'handlers': ['h', 'debug_rotating_file_handler'],
+        'handlers': ['console_log_handler', 'rotating_csv_file_log_handler'],
         'level': logging.DEBUG,
     },
 

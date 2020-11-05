@@ -2,12 +2,13 @@ import logging
 from logging.config import dictConfig
 
 
-# set up the logger
+# configure the logger
 logging_config = dict(
     version=1,
     formatters={
         'f': {'format':
-                  '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'}
+                  '%(asctime)s %(module)s>%(funcName)s>%(lineno)-4d %(levelname)s: %(message)s'}
+
     },
     handlers={
         'h': {'class': 'logging.StreamHandler',
@@ -32,8 +33,10 @@ logging_config = dict(
 dictConfig(logging_config)
 
 lg = logging.getLogger()
+
+# test the logger
 if __name__ == '__main__':
-        lg.debug('often makes a very good meal of %s', 'visiting tourists')
+    lg.debug('often makes a very good meal of %s', 'visiting tourists')
 
 
 

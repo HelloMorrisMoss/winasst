@@ -9,7 +9,7 @@ import re
 import win10toast as ts  # this has had it's __init__.py file replaced with the one from
 # https://github.com/Charnelx/Windows-10-Toast-Notifications to enable clickable toasts
 from typing import Callable
-from qlog import qlog
+from qlog import lg
 
 
 def nowa():
@@ -94,7 +94,7 @@ def get_appts():
 
 def check_appts_soon():
     # tz = timezone.tz
-    print(getframeinfo(currentframe()).lineno)
+    lg.debug(getframeinfo(currentframe()).lineno)
 
     # timezone
     appts = get_appts()
@@ -130,4 +130,7 @@ def check_appts_soon():
 
     else:
         print('No appts returned.')
-# check_appts_soon()
+
+# test
+if __name__ == '__main__':
+    check_appts_soon()

@@ -113,13 +113,14 @@ if __name__ == '__main__':
             lg.debug('between ifs')
 
             # this seems to cause the assistant to hang with some regularity, disabling for now
-            # # check if appts are coming up soon
-            # since_appts = now - appt_time
-            # if since_appts.seconds > 300:
-            #     lg.debug('Checking for appts.')
-            #     check_appts_soon()
-            #     appt_time = now
-            #     lg.debug('Appts check complete.')
+            # the hanging still happened without this
+            # check if appts are coming up soon
+            since_appts = now - appt_time
+            if since_appts.seconds > 300:
+                lg.debug('Checking for appts.')
+                check_appts_soon()
+                appt_time = now
+                lg.debug('Appts check complete.')
 
             # wait a while before checking again
             time.sleep(10)

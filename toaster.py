@@ -1,6 +1,7 @@
 import win10toast as ts  # this has had it's __init__.py file replaced with the one from
 # https://github.com/Charnelx/Windows-10-Toast-Notifications to enable clickable toasts
 from typing import Callable
+from qlog import lg
 
 
 def get_toasty(title: str, message: str, action: Callable = None, *action_args):
@@ -19,12 +20,13 @@ def get_toasty(title: str, message: str, action: Callable = None, *action_args):
     toaster = ts.ToastNotifier()
 
     # show toast with return command if supplied
+    # toaster.show_toast(title, message, callback_on_click=lambda: action(*action_args) if action is not None else None)
     toaster.show_toast(title, message, callback_on_click=lambda: action(*action_args) if action is not None else None)
 
 
 if __name__ == '__main__':
     def been_clicked(*args):
-        print(args[1], args[0])
+        lg.debug([str(arg) for arg in args])
 
     # with a on-click function
     get_toasty("Toast notification Test", "we're testing the toast notifications!", been_clicked, 'argument 0', 'arg 1')

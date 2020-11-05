@@ -7,34 +7,17 @@ import win10toast as ts  # this has had it's __init__.py file replaced with the 
 # https://github.com/Charnelx/Windows-10-Toast-Notifications to enable clickable toasts
 from typing import Callable
 from check_calendar import check_appts_soon
-from qlog import qlog
+from qlog import lg
 from toaster import get_toasty
 
 
-# def get_toasty(title: str, message: str, action: Callable = None):
-#     """Create a windows 10 toast notification.
-#
-#     :param title: str
-#         toast popup title
-#     :param message: str
-#         toast popup body text
-#     :param action:
-#         optional Callable, such as a function, when the toast is clicked
-#     :rtype: None
-#     """
-#     toaster = ts.ToastNotifier()
-#     clicked = toaster.show_toast(title,
-#                                  message,
-#                                  callback_on_click=action)
-
-
 def check_progs():
-    print('{tm} Checking programs.'.format(tm=datetime.now()))
+    lg.debug('{tm} Checking programs.'.format(tm=datetime.now()))
 
     # what processes are open?
     # universal_newlines=True was NEEDED; caused out of index error on the list after .split() the rows
     output = subprocess.check_output("tasklist.exe", shell=True, universal_newlines=True)
-    # print(output)
+    # lg.debug(output)
 
     # reset processes found
     for key, val in procs_2_watch.items():
@@ -46,11 +29,11 @@ def check_progs():
         if len(rwsplt) > 0:
             if rwsplt[0] in proc_nms:
                 procs_2_watch[rwsplt[0]]['running'] = True
-                # print(rwsplt)
+                # lg.debug(rwsplt)
     for key, val in procs_2_watch.items():
-        # print(key, val)
+        # lg.debug(key, val)
         if not val['running']:
-            print('Trying to open: {}'.format(val['name']))
+            lg.debug('Trying to open: {}'.format(val['name']))
             # os.popen(['c:\windows\system32\cmd.exe {app}'.format(app=val['cmd']))
             get_toasty('Missing Programs', 'Trying to open: {}'.format(val['name']))
 
@@ -58,18 +41,17 @@ def check_progs():
             # change to the startin directory then run the command
             command_to_send = 'cd ' + val['startin'] + ' && ' + val['cmd']
             os.popen(command_to_send)
-            # print(rwsplt)
+            # lg.debug(rwsplt)
 
             qlog('Tried to open {key}'.format(key=key))
-    print('Check complete')
+    lg.debug('Check complete')
 
 
 if __name__ == '__main__':
-    qlog('Program started.')
+    lg.debug('Program started.')
 
     # dictionary of processes to watch
     # if the top level key isn't found in tasklist output then the sub-dictionary is used to try to start the program
-
 
     procs_2_watch = {
         'Teams.exe': {
@@ -126,19 +108,21 @@ if __name__ == '__main__':
             if since_stretch.seconds > 900:
                 get_toasty("Get stretchin'!", 'Stretch and look outside, maybe walk a bit.')
                 # qlog('Stretch reminder popup.')
-                print('Stretch reminder popup.')
+                lg.debug('Stretch reminder popup.')
                 stretch_time = now
-            print('between ifs')
-            # check if appts are coming up soon
-            since_appts = now - appt_time
-            if since_appts.seconds > 300:
-                print('Checking for appts.')
-                check_appts_soon()
-                appt_time = now
-                print('Appts check complete.')
+            lg.debug('between ifs')
+
+            # this seems to cause the assistant to hang with some regularity, disabling for now
+            # # check if appts are coming up soon
+            # since_appts = now - appt_time
+            # if since_appts.seconds > 300:
+            #     lg.debug('Checking for appts.')
+            #     check_appts_soon()
+            #     appt_time = now
+            #     lg.debug('Appts check complete.')
 
             # wait a while before checking again
             time.sleep(10)
     except (KeyboardInterrupt, SystemExit):
-        qlog('Assistant program ended by user.')
+        lg.debug('Assistant program ended by user.')
 

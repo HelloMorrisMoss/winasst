@@ -90,7 +90,7 @@ def check_appts_soon():
     now = nowa()
     lg.debug('now ' + str(now))
     if len(appts) != 0:
-        lg.debug(getframeinfo(currentframe()).lineno)
+        lg.debug('There are appts to check.')
         for appt in appts:
             # lg.debug(repr(appt))
             # lg.debug(appt.Start.date(), datetime.today().date())

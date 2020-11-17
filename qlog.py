@@ -1,3 +1,5 @@
+"""Provides logging to console and a csv formatted file."""
+
 import logging
 from logging.config import dictConfig
 
@@ -11,7 +13,8 @@ class BreadcrumbFilter(logging.Filter):
         record.breadcrumbs = "{}.{}.{}".format(record.module, record.funcName, record.lineno)
         return True
 
-# configure the logger
+
+# dictionary to configure the logger
 logging_config = dict(
     version=1,
     filters={
@@ -46,7 +49,7 @@ logging_config = dict(
 
 )
 
-dictConfig(logging_config)
+logging.config.dictConfig(logging_config)
 
 lg = logging.getLogger()
 

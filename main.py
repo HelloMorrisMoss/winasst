@@ -104,15 +104,16 @@ if __name__ == '__main__':
             if since_check.seconds > 360:
                 check_progs()
                 prog_time = now
+                lg.debug('Exited check_progs.')
 
             # every once in a while remind to stretch
             since_stretch = now - stretch_time
             if since_stretch.seconds > 900:
+                lg.debug('Stretch reminder popup starting.')
                 get_toasty("Get stretchin'!", 'Stretch and look outside, maybe walk a bit.')
                 # qlog('Stretch reminder popup.')
-                lg.debug('Stretch reminder popup.')
                 stretch_time = now
-            lg.debug('between ifs')
+                lg.debug('Stretch reminder popup completed.')
 
             # this seems to cause the assistant to hang with some regularity, disabling for now
             # the hanging still happened without this
@@ -125,7 +126,10 @@ if __name__ == '__main__':
                 lg.debug('Appts check complete.')
 
             # wait a while before checking again
-            time.sleep(10)
+            lg.debug('Sleep for 60s') #, end='')
+            time.sleep(60)
     except (KeyboardInterrupt, SystemExit):
         lg.debug('Assistant program ended by user.')
 
+# hung trying to toast popup
+# 2020-11-06 13:00:35,665        main.<module>.112                             DEBUG: Stretch reminder popup starting.

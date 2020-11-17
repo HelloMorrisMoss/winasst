@@ -34,16 +34,17 @@ def get_toasty(title: str, message: str, action: Callable = None):
 def get_appts():
     """Get appointments from outlook calendar."""
     # https://stackoverflow.com/questions/21477599/read-outlook-events-via-python
-    lg.debug(getframeinfo(currentframe()).lineno)
+    lg.debug('Getting Outlook.')
     Outlook = win32com.client.Dispatch("Outlook.Application")
 
     try:
-        lg.debug(getframeinfo(currentframe()).lineno)
+        lg.debug('Getting appointments from Outlook.')
         ns = Outlook.GetNamespace("MAPI")
 
         appointments = ns.GetDefaultFolder(9).Items
     except AttributeError:
-        lg.debug(exc())
+        lg.error(exc())
+        # return an empty list
         appointments = []
 
     # finally:

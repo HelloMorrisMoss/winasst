@@ -9,6 +9,13 @@ from typing import Callable
 from check_calendar import check_appts_soon
 from qlog import lg
 from toaster import get_toasty
+from collections import OrderedDict
+
+# an attempt to avoid having time.sleep in the loop below, removing them CPU went to 20-30%
+# this is to set to use only 1 CPU core, it didn't help
+# import os
+# os.environ["OPENBLAS_NUM_THREADS"] = "1"
+# os.environ["MKL_NUM_THREADS"] = "1"
 
 
 def open_that(key, val):
@@ -55,33 +62,34 @@ if __name__ == '__main__':
     # dictionary of processes to watch
     # if the top level key isn't found in tasklist output then the sub-dictionary is used to try to start the program
 
-    procs_2_watch = {
-        'Teams.exe': {
-            'name': 'Teams',
-            'startin': r'"C:\Users\lmcglaughlin\AppData\Local\Microsoft\Teams"',
-            'cmd': r'C:\Users\lmcglaughlin\AppData\Local\Microsoft\Teams\Update.exe --processStart "Teams.exe"',
-            'running': False
-        },
-        'OUTLOOK.EXE': {
-            'name': 'Outlook',
-            'startin': r'"C:\Program Files\Microsoft Office\root\Office16"',
-            'cmd': r'"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"',
-            'running': False
-        },
-        'lync.exe': {
-            'name': 'Skype',
-            'startin': r'"C:\Program Files\Microsoft Office\root\Office16"',
-            'cmd': r'"C:\Program Files\Microsoft Office\root\Office16\lync.exe"',
-            'running': False
-        },
-        'googledrivesync.exe': {
-            'name': 'gdrive',
-            'startin': r'"C:\Program Files\Google\Drive"',
-            'cmd': r'"C:\Program Files\Google\Drive\googledrivesync.exe"',
-            'running': False
-        }
-    }
+    # this probably needs to be reworked to actually have the order as below
+    procs_2_watch = OrderedDict()
 
+    procs_2_watch['OUTLOOK.EXE'] = {
+        'name': 'Outlook',
+        'startin': r'"C:\Program Files\Microsoft Office\root\Office16"',
+        'cmd': r'"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"',
+        'running': False
+    }
+    procs_2_watch['Teams.exe'] = {
+        'name': 'Teams',
+        'startin': r'"C:\Users\lmcglaughlin\AppData\Local\Microsoft\Teams"',
+        'cmd': r'C:\Users\lmcglaughlin\AppData\Local\Microsoft\Teams\Update.exe --processStart "Teams.exe"',
+        'running': False
+    }
+    procs_2_watch['lync.exe'] = {
+        'name': 'Skype',
+        'startin': r'"C:\Program Files\Microsoft Office\root\Office16"',
+        'cmd': r'"C:\Program Files\Microsoft Office\root\Office16\lync.exe"',
+        'running': False
+    }
+    procs_2_watch['googledrivesync.exe'] = {
+        'name': 'gdrive',
+        'startin': r'"C:\Program Files\Google\Drive"',
+        'cmd': r'"C:\Program Files\Google\Drive\googledrivesync.exe"',
+        'running': False
+    }
+    
     # process names to look for in tasklist output
     proc_nms = procs_2_watch.keys()
 
@@ -118,16 +126,17 @@ if __name__ == '__main__':
             # this seems to cause the assistant to hang with some regularity, disabling for now
             # the hanging still happened without this
             # check if appts are coming up soon
-            since_appts = now - appt_time
-            if since_appts.seconds > 300:
-                lg.debug('Checking for appts.')
-                check_appts_soon()
-                appt_time = now
-                lg.debug('Appts check complete.')
+            # since_appts = now - appt_time
+            # if since_appts.seconds > 300:
+            #     lg.debug('Checking for appts.')
+            #     check_appts_soon()
+            #     appt_time = now
+            #     lg.debug('Appts check complete.')
 
             # wait a while before checking again
             lg.debug('Sleep for 60s') #, end='')
             time.sleep(60)
+            lg.debug('end sleep')
     except (KeyboardInterrupt, SystemExit):
         lg.debug('Assistant program ended by user.')
 

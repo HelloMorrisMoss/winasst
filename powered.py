@@ -1,4 +1,5 @@
 # Get power status of the system using ctypes to call GetSystemPowerStatus
+# thanks to https://stackoverflow.com/a/6156606
 
 import ctypes
 from ctypes import wintypes

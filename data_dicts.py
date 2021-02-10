@@ -1,0 +1,41 @@
+from collections import OrderedDict
+
+# dictionary of processes to watch
+
+# if the top level key isn't found in tasklist output then the sub-dictionary is used to try to start the program
+
+procs_2_watch = OrderedDict()
+
+procs_2_watch['OUTLOOK.EXE'] = {
+    'name': 'Outlook',
+    'startin': r'"C:\Program Files\Microsoft Office\root\Office16"',
+    'cmd': r'"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"',
+    'running': False,
+    'pop_up': True,
+    'voice_alert': False,
+    'voice_message': 'Outlook is not running.'
+}
+procs_2_watch['Teams.exe'] = {
+    'name': 'Teams',
+    'startin': r'"C:\Users\lmcglaughlin\AppData\Local\Microsoft\Teams"',
+    'cmd': r'C:\Users\lmcglaughlin\AppData\Local\Microsoft\Teams\Update.exe --processStart "Teams.exe"',
+    'running': False,
+    'pop_up': True,
+    'voice_alert': False,
+    'voice_message': 'Teams is not running.'
+}
+# procs_2_watch['lync.exe'] = {
+#     'name': 'Skype',
+#     'startin': r'"C:\Program Files\Microsoft Office\root\Office16"',
+#     'cmd': r'"C:\Program Files\Microsoft Office\root\Office16\lync.exe"',
+#     'running': False
+# }
+procs_2_watch['googledrivesync.exe'] = {
+    'name': 'gdrive',
+    'startin': r'"C:\Program Files\Google\Drive"',
+    'cmd': r'"C:\Program Files\Google\Drive\googledrivesync.exe"',
+    'running': False,
+    'pop_up': True,
+    'voice_alert': False,
+    'voice_message': 'G drive is not running.'
+}

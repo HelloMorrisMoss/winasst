@@ -21,7 +21,10 @@ def get_toasty(title: str, message: str, action: Callable = None, *action_args):
 
     # show toast with return command if supplied
     # toaster.show_toast(title, message, callback_on_click=lambda: action(*action_args) if action is not None else None)
-    toaster.show_toast(title, message, callback_on_click=lambda: action(*action_args) if action is not None else None)
+    toaster.show_toast(title,
+                       message,
+                       duration=4,
+                       callback_on_click=lambda: action(*action_args) if action is not None else None)
 
 
 if __name__ == '__main__':

@@ -44,7 +44,7 @@ logging_config = dict(
     },
     root={
         'handlers': ['console_log_handler', 'rotating_csv_file_log_handler'],
-        'level': logging.DEBUG,
+        'level': logging.INFO,
     },
 
 )

@@ -31,3 +31,24 @@ def work_net():
     return at_work
 
 
+if __name__ == '__main__':
+    # print(work_net())
+    import scapy
+    from scapy.all import *
+    # from scapy.layers import Dot11
+    #
+    # ap_list = []
+    #
+    #
+    # def PacketHandler(pkt):
+    #
+    #     if pkt.haslayer(Dot11):
+    #         if pkt.type == 0 and pkt.subtype == 8:
+    #             if pkt.addr2 not in ap_list:
+    #                 ap_list.append(pkt.addr2)
+    #                 print
+    #                 "AP MAC: %s with SSID: %s " % (pkt.addr2, pkt.info)
+    #
+    #
+    # sniff(iface="mon0", prn=PacketHandler)
+    sniff(iface="Wi-Fi", monitor=True, prn=lambda x:x.sprintf("{Dot11Beacon:%Dot11.addr3%\t%Dot11Beacon.info%\t%PrismHeader.channel%\t%Dot11Beacon.cap%}"))

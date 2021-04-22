@@ -39,3 +39,14 @@ procs_2_watch['googledrivesync.exe'] = {
     'voice_alert': False,
     'voice_message': 'G drive is not running.'
 }
+
+procs_2_watch['aw-server.exe'] = {
+    'name': 'ActivityWatch',
+    'startin': r'"C:\Users\lmcglaughlin\AppData\Local\Programs\ActivityWatch"',
+    'cmd': r'"C:\Users\lmcglaughlin\AppData\Local\Programs\ActivityWatch\aw-qt.exe"',
+    'running': False,
+    'pop_up': True,
+    'voice_alert': False,
+    'voice_message': 'Activity Watch is not running.',
+    'kill_list': ['aw-server.exe', 'aw-qt.exe', 'aw-watcher-window.exe', 'aw-watcher-afk.exe']
+}

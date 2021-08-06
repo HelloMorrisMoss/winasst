@@ -27,12 +27,15 @@ con = conct()
 # instantiate a cursor
 cur = con.cursor()
 
-# mk_tbl = """
-#     CREATE TABLE test_table (
-#         id integer PRIMARY KEY,
-#         text_col TEXT NOT NULL,
-#         num_col integer NOT NULL)
-#         """
+
+def create_table():
+    mk_tbl = """
+        CREATE TABLE test_table (
+            id integer PRIMARY KEY,
+            working_on TEXT NOT NULL,
+            tstamp TEXT)
+            """
+
 #
 # rnd_lists = [str(num) for num in (random.randint(0, 200), random.randint(0, 200))]
 # # print(rnd_lists)
@@ -56,4 +59,4 @@ cur = con.cursor()
 # # print('after', res.fetchall())
 # # print(cur.description)
 
-_ = table_exists(cur)
+# _ = table_exists(cur)

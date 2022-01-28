@@ -1,0 +1,1 @@
+"venv/scripts/activate"&&py system_volume.py --unmute

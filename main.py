@@ -4,7 +4,7 @@ import subprocess
 import time
 from datetime import datetime
 
-from data_dicts import procs_2_watch
+from managed_programs.data_dicts import procs_2_watch
 # https://github.com/Charnelx/Windows-10-Toast-Notifications to enable clickable toasts
 from gui import SettingsWindow
 from qlog import lg

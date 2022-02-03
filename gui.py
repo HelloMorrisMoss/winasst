@@ -1,7 +1,7 @@
 import tkinter as tk
 import time
 import threading
-from data_dicts import procs_2_watch
+from managed_programs.data_dicts import procs_2_watch
 
 
 class SettingsWindow:

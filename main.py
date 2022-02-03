@@ -8,7 +8,7 @@ from data_dicts import procs_2_watch
 # https://github.com/Charnelx/Windows-10-Toast-Notifications to enable clickable toasts
 from gui import SettingsWindow
 from qlog import lg
-from toaster import get_toasty
+from system.toaster import get_toasty
 # an attempt to avoid having time.sleep in the loop below, removing them CPU went to 20-30%
 # this is to set to use only 1 CPU core, it didn't help
 # import os

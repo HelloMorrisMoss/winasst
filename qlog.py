@@ -37,7 +37,7 @@ logging_config = dict(
             'level': 'DEBUG',
             'formatter': 'log_file_format',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'debug.log',
+            'filename': 'logs/debug.log',
             'mode': 'a',
             'maxBytes': 1048576,
             'backupCount': 10}

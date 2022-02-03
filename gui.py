@@ -9,7 +9,7 @@ class SettingsWindow:
         self.root = tk.Tk()
         self.settings_dict = settings_dict
         self.root.title('WinAsst GUI')
-        self.root.geometry('400x500')
+        self.root.geometry('400x200')
 
         settings_frame = tk.Frame(self.root)
         settings_frame.pack()

@@ -3,6 +3,7 @@ from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 import argparse
 
+from wherefi import work_net
 
 devices = AudioUtilities.GetSpeakers()
 interface = devices.Activate(
@@ -25,7 +26,11 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.mute:
-        mute()
-    else:
-        unmute()
+    # check if at work
+    if work_net():
+
+        if args.mute:
+            mute()
+        else:
+            unmute()
+

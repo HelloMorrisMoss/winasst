@@ -23,8 +23,10 @@ def work_net():
         at_work = True
 
     # check tasklist for the VPN program
-    tasklist = subprocess.check_output("tasklist", shell=True, universal_newlines=True)
-    if "NetClient" in tasklist:
+    tasklist = subprocess.check_output('tasklist', shell=True, universal_newlines=True)
+    print(tasklist)
+    if "NetClient.exe" in tasklist:
+        lg.debug('VPN work')
         at_work = True
 
     # if we haven't found anything, not at work
@@ -33,22 +35,24 @@ def work_net():
 
 if __name__ == '__main__':
     # print(work_net())
-    import scapy
-    from scapy.all import *
-    # from scapy.layers import Dot11
-    #
-    # ap_list = []
-    #
-    #
-    # def PacketHandler(pkt):
-    #
-    #     if pkt.haslayer(Dot11):
-    #         if pkt.type == 0 and pkt.subtype == 8:
-    #             if pkt.addr2 not in ap_list:
-    #                 ap_list.append(pkt.addr2)
-    #                 print
-    #                 "AP MAC: %s with SSID: %s " % (pkt.addr2, pkt.info)
-    #
-    #
-    # sniff(iface="mon0", prn=PacketHandler)
-    sniff(iface="Wi-Fi", monitor=True, prn=lambda x:x.sprintf("{Dot11Beacon:%Dot11.addr3%\t%Dot11Beacon.info%\t%PrismHeader.channel%\t%Dot11Beacon.cap%}"))
+    # import scapy
+    # from scapy.all import *
+    # # from scapy.layers import Dot11
+    # #
+    # # ap_list = []
+    # #
+    # #
+    # # def PacketHandler(pkt):
+    # #
+    # #     if pkt.haslayer(Dot11):
+    # #         if pkt.type == 0 and pkt.subtype == 8:
+    # #             if pkt.addr2 not in ap_list:
+    # #                 ap_list.append(pkt.addr2)
+    # #                 print
+    # #                 "AP MAC: %s with SSID: %s " % (pkt.addr2, pkt.info)
+    # #
+    # #
+    # # sniff(iface="mon0", prn=PacketHandler)
+    # sniff(iface="Wi-Fi", monitor=True, prn=lambda x:x.sprintf("{Dot11Beacon:%Dot11.addr3%\t%Dot11Beacon.info%\t%PrismHeader.channel%\t%Dot11Beacon.cap%}"))
+
+    print(work_net())

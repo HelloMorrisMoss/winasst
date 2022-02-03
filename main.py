@@ -14,7 +14,7 @@ from system.toaster import get_toasty
 # import os
 # os.environ["OPENBLAS_NUM_THREADS"] = "1"
 # os.environ["MKL_NUM_THREADS"] = "1"
-from noise_makers.voice import read_this
+from sound_i0.voice import read_this
 
 
 def open_that(key, val):

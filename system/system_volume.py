@@ -1,36 +1,33 @@
+"""Control the system volume and mute state."""
+
+
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, ISimpleAudioVolume
 import argparse
-
-from wherefi import work_net
-
-devices = AudioUtilities.GetSpeakers()
-interface = devices.Activate(
-    IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-volume = cast(interface, POINTER(IAudioEndpointVolume))
+from math import log
 
 
-def mute():
-    volume.SetMute(1, None)
+class Volume:
+    def __init__(self):
+        self.devices = AudioUtilities.GetSpeakers()
+        self.interface = self.devices.Activate(
+            IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        self.volume = cast(self.interface, POINTER(IAudioEndpointVolume))
+
+    def mute(self):
+        """Mute the system volume."""
+        self.volume.SetMute(1, None)
 
 
-def unmute():
-    volume.SetMute(0, None)
+    def unmute(self):
+        """Unmute the system volume."""
+        self.volume.SetMute(0, None)
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--mute', help='Mute system audio.', action='store_true')
-    parser.add_argument('--unmute', help='Unmute system audio.', action='store_true')
+    sessions = AudioUtilities.GetAllSessions()
+    for ses in sessions:
+        vol = ses._ctl.QueryInterface(ISimpleAudioVolume)
 
-    args = parser.parse_args()
-
-    # check if at work
-    if work_net():
-
-        if args.mute:
-            mute()
-        else:
-            unmute()
 

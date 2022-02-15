@@ -17,14 +17,12 @@ def work_net():
 
     # check ipconfig for the DNS name
     ipconfig = subprocess.check_output("ipconfig", shell=True, universal_newlines=True)
-    print(ipconfig)
     if "LW.permacel.com" in ipconfig:
         lg.debug('work')
         at_work = True
 
     # check tasklist for the VPN program
     tasklist = subprocess.check_output('tasklist', shell=True, universal_newlines=True)
-    print(tasklist)
     if "NetClient.exe" in tasklist:
         lg.debug('VPN work')
         at_work = True

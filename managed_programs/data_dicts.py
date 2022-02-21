@@ -10,7 +10,7 @@ procs_2_watch['OUTLOOK.EXE'] = {
     'name': 'Outlook',
     'startin': r'"C:\Program Files\Microsoft Office\root\Office16"',
     'cmd': r'"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"',
-    'running': False,
+    'running_val': False,
     'pop_up': True,
     'voice_alert': False,
     'voice_message': 'Outlook is not running.'
@@ -19,7 +19,7 @@ procs_2_watch['Teams.exe'] = {
     'name': 'Teams',
     'startin': r'"C:\Users\lmcglaughlin\AppData\Local\Microsoft\Teams"',
     'cmd': r'C:\Users\lmcglaughlin\AppData\Local\Microsoft\Teams\Update.exe --processStart "Teams.exe"',
-    'running': False,
+    'running_val': False,
     'pop_up': True,
     'voice_alert': False,
     'voice_message': 'Teams is not running.'
@@ -28,13 +28,13 @@ procs_2_watch['Teams.exe'] = {
 #     'name': 'Skype',
 #     'startin': r'"C:\Program Files\Microsoft Office\root\Office16"',
 #     'cmd': r'"C:\Program Files\Microsoft Office\root\Office16\lync.exe"',
-#     'running': False
+#     'running_val': False
 # }
 # procs_2_watch['googledrivesync.exe'] = {
 #     'name': 'gdrive',
 #     'startin': r'"C:\Program Files\Google\Drive"',
 #     'cmd': r'"C:\Program Files\Google\Drive\googledrivesync.exe"',
-#     'running': False,
+#     'running_val': False,
 #     'pop_up': True,
 #     'voice_alert': False,
 #     'voice_message': 'G drive is not running.'
@@ -45,7 +45,7 @@ procs_2_watch['aw-server.exe'] = {
     'name': 'ActivityWatch',
     'startin': r'"C:\Users\lmcglaughlin\AppData\Local\Programs\ActivityWatch"',
     'cmd': r'"C:\Users\lmcglaughlin\AppData\Local\Programs\ActivityWatch\aw-qt.exe"',
-    'running': False,
+    'running_val': False,
     'pop_up': True,
     'voice_alert': False,
     'voice_message': 'Activity Watch is not running.',

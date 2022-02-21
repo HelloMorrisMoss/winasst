@@ -36,18 +36,18 @@ def check_progs(settings_dict, open_all=False):
 
     # reset processes found
     for key, val in procs_2_watch.items():
-        val['running'] = False if settings_dict[key] else True
+        val['running_val'] = False if settings_dict[key] else True
 
     # check the output for the processes
     for rw in output.splitlines():
         rwsplt = rw.split()
         if len(rwsplt) > 0:
             if rwsplt[0] in proc_nms:
-                procs_2_watch[rwsplt[0]]['running'] = True
+                procs_2_watch[rwsplt[0]]['running_val'] = True
                 # lg.info(rwsplt)
     for key, val in procs_2_watch.items():
         # lg.info(key, val)
-        if not val['running']:
+        if not val['running_val']:
             if open_all:
                 open_that(key, val)
             else:
@@ -136,7 +136,7 @@ if __name__ == '__main__':
         "Who was that behind you? Could it be time to {} already?", "How did it get so late, it's already time to {}!",
         "I want to tell you something, {}!", "Can you still kick yourself in the back of the head? {}",
         "Ha. Ha. Ha. It's so funny I almost forgot to {}", "Wet Fetching. Let Retching. Get stretching.",
-        "Some body once told me. The world is gonna roll me. I ain't the stetch-est back in the shed!",
+        "Some body once told me. The world is gonna roll me. I ain't the stretch-est back in the shed!",
         "Roll for initiative. {}!", "Give me a con save vs sore back. {}!",
         "The wizard casts elastic back. Get stretching.", "Are you ignoring me? {}"
     ]

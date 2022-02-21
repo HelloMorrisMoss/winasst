@@ -148,7 +148,6 @@ if __name__ == '__main__':
     # loop through processes every once in a while to check for programs which frequently give trouble about being open
     settings_d = {key: False for key in procs_2_watch.keys()}
     SettingsWindow(background_process, settings_d)
-    background_process()
 
 # hung trying to toast popup
 # 2020-11-06 13:00:35,665        main.<module>.112                             DEBUG: Stretch reminder popup starting.

@@ -1,6 +1,8 @@
+import argparse
 import os
 import random
 import subprocess
+import sys
 import time
 from datetime import datetime
 
@@ -111,37 +113,21 @@ def background_process(settings_dict, **kwargs):
 
 if __name__ == '__main__':
     lg.info('Program started.')
+    cl_parser = argparse.ArgumentParser()
+    cl_parser.add_argument('--work_check', help='Check if connected to work network and stop program if not.',
+                           action='store_true')
+    cl_args = cl_parser.parse_args()
+
+    if cl_args.work_check:
+        at_work = work_net()
+
+        if not at_work:
+            sys.exit()  # if not connected to the work network, likely don't need to be running
+        else:
+            lg.info('at work!')
 
     # process names to look for in tasklist output
-    proc_nms = procs_2_watch.keys()
-
-    stretch_attention_prefixes = [
-        'hey is for horses, stretching is for backs {}', 'yoyos go up and down, backs go round and round, {}',
-        'hello there general {}', 'salutations, some back, terrific, radiant, {}',
-        'hey you, the one with the back, {}',
-        'you know, you better {}', 'yo there stretch {}', 'hey mambo, mambo  {},' 'holla at yo back, {}',
-        'onomatopoeia, you know I wannna see ya, {}', 'wahmbology, the study of  {}',
-        'interesting, did you know you should {}', 'we place stretching before everything else',
-        'it says here that you need to {}',
-        'here yee here yee, the time has commeth to {}', 'wibbly wobbly time-ee wimey to {}',
-        'look its count back-ula, {}', 'rule number one of chair-zombie land is {}',
-        'you know you are going to have to need to {}', 'back streets back all right, {}',
-        'henceforth this shall be known as the time whence it was time to {}',
-        'roll a stretching check {}', 'fetch the retch to etch the ketchup catch and {}',
-        'watch behind you, your back is getting sore {}',
-        "you know it's wack if you jack your back while piling the stack, {}",
-        "Put your hand on your hips, yee-aiyuh. Let your backbone slip. Do the Watusi. Stretch your back real loosey.",
-        'the secret ingredient is to {}', 'did I ever tell you about the time you need to {}',
-        "text-to-speech bots don't have backs, if I had a back like you, you know I would {}",
-        "Mrs. Frisbee and the backs of NIMH, {}", "wickety wickety wack, it's time to stretch your back",
-        "Hey, what's that out the window, now would be a great time to {}",
-        "Who was that behind you? Could it be time to {} already?", "How did it get so late, it's already time to {}!",
-        "I want to tell you something, {}!", "Can you still kick yourself in the back of the head? {}",
-        "Ha. Ha. Ha. It's so funny I almost forgot to {}", "Wet Fetching. Let Retching. Get stretching.",
-        "Some body once told me. The world is gonna roll me. I ain't the stretch-est back in the shed!",
-        "Roll for initiative. {}!", "Give me a con save vs sore back. {}!",
-        "The wizard casts elastic back. Get stretching.", "Are you ignoring me? {}"
-    ]
+    proc_nms: tuple = procs_2_watch.keys()
 
     # whether the loop has run once or not
     first_run = True

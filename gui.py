@@ -21,9 +21,8 @@ class SettingsWindow(tk.Tk):
 
         for proc, params in procs_2_watch.items():
             # def add_checkbox()
-            print(proc)
+            lg.debug(proc)
             cb_text = proc
-            # chkbx_dict[proc] = tk.Checkbutton(settings_frame, text=cb_text).grid(sticky=tk.W)
             self.chkbx_dict[proc] = {'selected': tk.BooleanVar(), 'value': False}
             cb = tk.Checkbutton(settings_frame, text=cb_text, variable=self.chkbx_dict[proc]['selected'])
             cb.grid(sticky=tk.W)
@@ -38,8 +37,8 @@ class SettingsWindow(tk.Tk):
 
         def on_closing():
             # TODO: this needs to end the other thread; it may need to be wrapped in a custom stoppable thread class
-            print('Window closed, ending mainloop.')
-            # print('self.bg_proc', type(self.bg_proc), self.bg_proc)
+            lg.info('Window closed, ending mainloop.')
+            # lg.debug('self.bg_proc', type(self.bg_proc), self.bg_proc)
             self.destroy()
 
         self.protocol("WM_DELETE_WINDOW", on_closing)
@@ -49,7 +48,7 @@ class SettingsWindow(tk.Tk):
     def update_settings(self):
         for k, v in self.chkbx_dict.items():
             self.settings_dict[k] = v['selected'].get()
-            # print(k, v)
+            # lg.debug(k, v)
 
         self.after(1000, self.update_settings)
 
@@ -107,7 +106,7 @@ class CurrentTaskFrame(tk.LabelFrame):
                 self.current_task_seconds_var.set(60)
 
                 if mins_int % 5 == 0:
-                    print('reading 5 minute warning')
+                    lg.debug('reading 5 minute warning')
                     read_this(f'{mins_int} minutes left for {self.current_task_var.get()}')
             self.parent.after(1000, self.task_timer)
 
@@ -117,11 +116,11 @@ if __name__ == '__main__':
 
 
     def wattchit(*args, **kwargs):
-        print(f'wattchit (testing bg_process) was given these arguments {args=}, {kwargs=}')
+        lg.debug(f'wattchit (testing bg_process) was given these arguments {args=}, {kwargs=}')
         while True:
             time.sleep(30)
-            print('watchit loop')
-            print(settings_d)
+            lg.debug('watchit loop')
+            lg.debug(settings_d)
 
 
     sw = SettingsWindow(wattchit, settings_d)

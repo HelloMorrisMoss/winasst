@@ -1,8 +1,8 @@
 import argparse
 
 from qlog import lg
-from system.wherefi import work_net
-from system.system_volume import Volume
+from system_interface.wherefi import work_net
+from system_interface.system_volume import Volume
 
 
 if __name__ == '__main__':

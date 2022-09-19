@@ -2,6 +2,7 @@ import tkinter as tk
 import time
 import threading
 from managed_programs.data_dicts import procs_2_watch
+from qlog import lg
 from sound_i0.voice import read_this
 
 
@@ -97,7 +98,7 @@ class CurrentTaskFrame(tk.LabelFrame):
             time.sleep(1)
             secs_int = int(self.current_task_seconds_var.get()) - 1
             self.current_task_seconds_var.set(int(secs_int))
-            print(f'running timer {secs_int=}')
+            lg.debug(f'running timer {secs_int=}')
             if secs_int == 0:
                 mins_int = int(self.current_task_minutes_var.get()) - 1
                 self.current_task_minutes_var.set(str(mins_int))

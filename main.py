@@ -6,6 +6,7 @@ import sys
 import time
 from datetime import datetime
 
+from check_calendar import check_appts_soon
 from config.stretch_prefixes import stretch_attention_prefixes
 from managed_programs.data_dicts import procs_2_watch
 # https://github.com/Charnelx/Windows-10-Toast-Notifications to enable clickable toasts
@@ -30,7 +31,7 @@ def open_that(key, val):
     lg.info('Tried to open {key}'.format(key=key))
 
 
-def check_progs(settings_dict, open_all=False):
+def check_progs(settings_dict, first_run=False):
     lg.info('{tm} Checking programs.'.format(tm=datetime.now()))
 
     # what processes are open?
@@ -52,11 +53,11 @@ def check_progs(settings_dict, open_all=False):
     for key, val in procs_2_watch.items():
         # lg.info(key, val)
         if not val['running_val']:
-            if open_all:
-                open_that(key, val)
+            if first_run:
+                if val.get('initial_start'):  # if this one should be started initially
+                    open_that(key, val)
             else:
                 lg.info('{} is not open, prompting to open.'.format(val['name']))
-                # os.popen(['c:\windows\system32\cmd.exe {app}'.format(app=val['cmd']))
                 get_toasty('Missing Programs', 'Click to try to open: {}'.format(val['name']), open_that, key, val)
 
     lg.info('Check complete')
@@ -66,6 +67,7 @@ def background_process(settings_dict, **kwargs):
     # global prog_time, first_run, stretch_time
     # program check time
     prog_time = datetime.strptime("1970-01-01 00:00:00", "%Y-%m-%d %H:%M:%S")
+    appt_time = prog_time
     # remind to stretch
     stretch_time = prog_time
 
@@ -96,12 +98,12 @@ def background_process(settings_dict, **kwargs):
             # this seems to cause the assistant to hang with some regularity, disabling for now
             # the hanging still happened without this
             # check if appts are coming up soon
-            # since_appts = now - appt_time
-            # if since_appts.seconds > 300:
-            #     lg.info('Checking for appts.')
-            #     check_appts_soon()
-            #     appt_time = now
-            #     lg.info('Appts check complete.')
+            since_appts = now - appt_time
+            if since_appts.seconds > 300:
+                lg.info('Checking for appts.')
+                check_appts_soon()
+                appt_time = now
+                lg.info('Appts check complete.')
 
             # wait a while before checking again
             lg.info('Sleep for 60s')
@@ -128,10 +130,6 @@ if __name__ == '__main__':
 
     # process names to look for in tasklist output
     proc_nms: tuple = procs_2_watch.keys()
-
-    # whether the loop has run once or not
-    first_run = True
-    # TODO: on first run try to connect to corporate network: something like: netsh wlan connect "NA-LW Corporate"
 
     # loop through processes every once in a while to check for programs which frequently give trouble about being open
     settings_d = {key: False for key in procs_2_watch.keys()}

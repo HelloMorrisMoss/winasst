@@ -7,11 +7,12 @@ from sound_i0.voice import read_this
 
 
 class SettingsWindow(tk.Tk):
+    """GUI window to display which programs are being managed and allow tracking time spent on a task."""
+
     def __init__(self, bg_process, settings_dict, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.settings_dict = settings_dict
         self.title('WinAsst GUI')
-        self.geometry('400x200')
 
         settings_frame = tk.Frame(self)
         settings_frame.pack()
@@ -24,10 +25,10 @@ class SettingsWindow(tk.Tk):
             cb_text = proc
             # chkbx_dict[proc] = tk.Checkbutton(settings_frame, text=cb_text).grid(sticky=tk.W)
             self.chkbx_dict[proc] = {'selected': tk.BooleanVar(), 'value': False}
-            self.chkbx_dict[proc]['check_box'] = tk.Checkbutton(settings_frame, text=cb_text,
-                                                                variable=self.chkbx_dict[proc]['selected']).grid(
-                sticky=tk.W)
-            self.chkbx_dict[proc]['selected'].set(True)
+            cb = tk.Checkbutton(settings_frame, text=cb_text, variable=self.chkbx_dict[proc]['selected'])
+            cb.grid(sticky=tk.W)
+            self.chkbx_dict[proc]['check_box'] = cb
+            self.chkbx_dict[proc]['selected'].set(params.get('initial_start'))
 
         # start the background thread
         threading.Thread(target=bg_process, args=[settings_dict], kwargs=kwargs).start()
@@ -54,6 +55,7 @@ class SettingsWindow(tk.Tk):
 
 
 class CurrentTaskFrame(tk.LabelFrame):
+    """To keep an eye on how long is being spent on a task."""
     def __init__(self, parent, *args, **kwargs):
         self.parent = parent
         super().__init__(parent, text='current task', *args, **kwargs)
